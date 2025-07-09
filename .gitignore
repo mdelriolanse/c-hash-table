@@ -42,6 +42,10 @@
 *.idb
 *.pdb
 
+# This project's build output
+/test
+/test_asan
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd

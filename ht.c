@@ -1,3 +1,6 @@
+// Expose strdup from string.h under strict C standard modes (e.g. -std=c11).
+#define _POSIX_C_SOURCE 200809L
+
 #include "ht.h"
 
 #include <assert.h>

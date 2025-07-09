@@ -25,7 +25,7 @@ void* ht_get(ht* table, const char* key);
 // copied key, or NULL if out of memory.
 const char* ht_set(ht* table, const char* key, void* value);
 
-// Return number of tiems in the hash table.
+// Return number of items in the hash table.
 size_t ht_length(ht* table);
 
 // hash table iterator: create with ht_iterator, iterate with
@@ -39,12 +39,12 @@ typedef struct {
 	size_t _index; // current index to ht._entries.
 } hti;
 
-// Return new hash table iterator (for use with ht_next).
+// Return new hash table iterator (for use with it_next).
 hti ht_iterator(ht* table);
 
 // Move iterator to next item in hash table, update iterator's key
 // and value to current item, and return true. If there are no more
-// items, return false. Don't call ht-set during iteration.
-bool ht_next(hti* it);
+// items, return false. Don't call ht_set during iteration.
+bool it_next(hti* it);
 
 #endif
