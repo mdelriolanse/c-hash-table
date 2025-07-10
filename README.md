@@ -1,39 +1,64 @@
-# C Hash Table Implementation (Based on Ben Hoyt's Tutorial)
+# C Hash Table
 
-This repository contains a simple, efficient hash table implementation in C that follows Ben Hoyt's excellent [Build Your Own Hash Table in C](https://benhoyt.com/writings/hash-table-in-c/) tutorial. The purpose of this project is educational: to understand low-level data structure design and memory management in C by building a hash table from scratch.
+A small hash table implementation in C, built by following Ben Hoyt's tutorial [Build Your Own Hash Table in C](https://benhoyt.com/writings/hash-table-in-c/). This project exists to understand how hash tables actually work under the hood: hashing, open addressing, collision resolution, and manual memory management.
 
-> 💡 This implementation was directly inspired by and adapted from Ben Hoyt’s original work. All credit for the design and guiding principles belongs to him.
+This is a derivative and learning-based reimplementation of Ben Hoyt's work. All credit for the original design belongs to him. Ben released his tutorial code into the public domain, and this adaptation is shared in that same spirit.
 
-## 📦 Features
+## Features
 
-- Uses **open addressing** with **linear probing** for collision resolution.
-- Automatically expands the table when it's more than half full.
-- Stores key-value pairs where:
-  - Keys are `const char*` (strings, copied via `strdup`)
-  - Values are `void*` (user-provided pointers)
-- Iteration support via a simple iterator type.
-- Uses the **FNV-1a** hash function for good distribution and speed.
+- Open addressing with linear probing for collision resolution.
+- Automatic resize when the table is more than half full.
+- String keys (copied via `strdup`) and `void*` values, so it can store anything.
+- An iterator for walking every key-value pair.
+- FNV-1a hashing for a good, fast distribution.
 
-## 📚 File Structure
+## File structure
 
 | File        | Description |
 |-------------|-------------|
 | `ht.c`      | Implementation of the hash table (`ht`) and its iterator (`hti`) |
 | `ht.h`      | Public interface for using the hash table |
-| `main.c`    | Optional: your test/demo file goes here |
+| `main.c`    | Test/demo program exercising create, set, get, resize, iteration, and destroy |
+| `Makefile`  | Builds and runs the test program |
 | `README.md` | This file |
 
-## 🛠️ How It Works
+## Building and running
 
-- **ht_create**: Allocates and initializes an empty hash table.
-- **ht_set**: Inserts a key–value pair. Expands the table if it becomes more than half full.
-- **ht_get**: Looks up a key and returns the corresponding value.
-- **ht_destroy**: Frees all allocated memory — including the keys.
-- **ht_iterator / it_next**: Iterates through all items in the hash table.
+Requires a C compiler (`cc`/`gcc`/`clang`) and `make`.
 
-Internally, the hash table keeps an array of `ht_entry` structs. Each `ht_entry` stores a key and value. When inserting, it uses the FNV-1a hash of the key to find the initial slot and then probes forward until it finds an empty slot or an existing matching key.
+```sh
+make
+```
 
-## 🔁 Example Usage
+This compiles `ht.c` and `main.c` into a `test` binary and runs it. Each check prints `PASS` or `FAIL`, and the program exits non-zero if anything fails. Example output:
+
+```
+PASS: ht_create returns a non-NULL table
+PASS: length is 3 after three inserts
+PASS: get returns value for 'one'
+...
+ALL TESTS PASSED
+```
+
+To clean up the build artifact:
+
+```sh
+make clean
+```
+
+The test suite has also been checked with AddressSanitizer and UndefinedBehaviorSanitizer (`-fsanitize=address,undefined`) and comes back clean, no leaks, no use-after-free, no undefined behavior.
+
+## How it works
+
+- `ht_create` allocates and initializes an empty hash table.
+- `ht_set` inserts a key-value pair, expanding the table first if it's more than half full.
+- `ht_get` looks up a key and returns the corresponding value, or `NULL` if it isn't present.
+- `ht_destroy` frees all allocated memory, including the copied keys.
+- `ht_iterator` / `it_next` walk through every stored item.
+
+Internally the table is a flat array of `ht_entry` structs, each holding a key and a value. Inserting a key hashes it with FNV-1a to pick a starting slot, then probes forward linearly until it finds a matching key or an empty slot.
+
+## Example usage
 
 ```c
 ht* table = ht_create();
@@ -46,6 +71,7 @@ ht_destroy(table);
 ```
 
 To iterate:
+
 ```c
 hti it = ht_iterator(table);
 while (it_next(&it)) {
@@ -53,12 +79,14 @@ while (it_next(&it)) {
 }
 ```
 
-## 📎 Credit
+## Credit
+
 This project is a derivative and learning-based reimplementation of:
 
-Ben Hoyt, Build Your Own Hash Table in C
+Ben Hoyt, [Build Your Own Hash Table in C](https://benhoyt.com/writings/hash-table-in-c/)
 
-Ben graciously released his work under the public domain. This adaptation is shared in that same spirit — to educate and encourage low-level programming skills.
+Ben released his original work into the public domain. This adaptation is shared in that same spirit, to learn from and to help others learn low-level programming.
 
-## 📜 License
-This project is released under the terms of the MIT License, with credit to Ben Hoyt for the original tutorial and inspiration.
+## License
+
+Released under the MIT License, with credit to Ben Hoyt for the original tutorial and design.
